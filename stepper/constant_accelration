@@ -1,0 +1,61 @@
+// defines pins numbers
+const int stepPin = 3; 
+const int dirPin = 2; 
+
+float waitTime = 0.03;
+int accelerationTerm = 80;
+int roundedWaitTime;
+int counter;
+
+
+
+
+ 
+void setup() {
+  //setup the pins
+  Serial.begin(9600);
+  pinMode(stepPin,OUTPUT); 
+  pinMode(dirPin,OUTPUT);
+}
+
+//function to return the next delay value for positive acceleration
+float positiveAcceleration(float waitTime) {
+    float dVelocity = waitTime * accelerationTerm;
+    waitTime = 1/(dVelocity+(1/waitTime));
+    if(waitTime < 0.0001){ // for determining the max speed by the min wait time
+      waitTime = 0.0001;
+    }
+    return waitTime;
+}
+//function to return the next delay value for negative acceleration
+float negativeAcceleration(float waitTime) {
+    float dVelocity = waitTime * -1 * accelerationTerm;
+    waitTime = 1/(dVelocity+1/waitTime);
+    return waitTime;
+}
+
+void loop() {
+  digitalWrite(dirPin,HIGH);
+
+  for(int x = 0; x < 200*8; x++) {
+    waitTime = positiveAcceleration(waitTime);
+    roundedWaitTime = round(waitTime*1000000);
+    digitalWrite(stepPin,HIGH);
+    delayMicroseconds(roundedWaitTime);
+    digitalWrite(stepPin, LOW);
+    counter++;
+    if(counter > 360){
+      counter = 0;
+   Serial.print("Current position: ");
+   Serial.print(counter);
+   Serial.println();
+    }
+    else{
+Serial.print("Current position: ");
+Serial.print(counter);
+Serial.println();
+
+    } 
+  }  
+}
+
