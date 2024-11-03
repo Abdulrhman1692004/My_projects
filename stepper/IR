@@ -1,0 +1,30 @@
+
+const int IR_PIN = 5;  // IR sensor input pin
+int n; // number of counts per revolution
+
+ unsigned int counter = 0;  // Counter variable for revolutions
+unsigned long previousMillis = 0;  // Variable to store previous time
+volatile unsigned float rpm = 0;  // Variable to store RPM value
+
+void setup() {
+  // put your setup code here, to run once:
+  Serial.begin(9600);
+  pinMode(IR_PIN, INPUT_PULLUP);
+ attachInterrupt(digitalPinToInterrupt(IR_PIN), IRinterrupt, FALLING);
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+  unsigned long currentMillis = millis();
+
+  if (currentMillis - previousMillis >= 1000) {
+    detachInterrupt(digitalPinToInterrupt(IR_PIN));
+    rpm = (counter / n) * 60;  // Calculate RPM
+    counter = 0;
+    attachInterrupt(digitalPinToInterrupt(IR_PIN), IRinterrupt, FALLING);
+    previousMillis = currentMillis;
+  }
+}
+void IRinterrupt() {
+  counter++;
+}
