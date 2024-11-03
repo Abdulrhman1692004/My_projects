@@ -1,0 +1,33 @@
+#define DIR_PIN 2
+#define STEP_PIN 3
+#define ENABLE_PIN 4 // Example pin for enable control
+int counter;
+
+int micro_factor = 8;  //microstepping factor depends on the configuration of ms1 and ms2.
+
+void setup() {
+  Serial.begin(115200);
+  Serial.print("Start");
+}
+
+void loop() {
+  //stepper.runSpeed();
+  // put your main code here, to run repeatedly:
+digitalWrite(DIR_PIN, dir); // note that when dir = 1, ccw || dir = 0, cw
+
+     for (uint16_t i = 0; i < 200*8; i++) {
+    digitalWrite(STEP_PIN, HIGH);
+    delayMicroseconds(T/2);
+    digitalWrite(STEP_PIN, LOW);
+    delayMicroseconds(T/2);
+    counter++;
+    Serial.print("Current position:");
+    Serial.print(counter);
+    Serial.println();
+    //T: is the period of the PWM which determines rpm as the equation implies
+    //counter is a variable that can be used to measure the relative distance like an encoder
+    //note: We still need to add a function that makes the counting process happen only when the motor is in action
+
+      
+  } 
+}
